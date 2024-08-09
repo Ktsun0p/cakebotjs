@@ -1,6 +1,6 @@
 # CakeBot
 
-CakeBot is a Minecraft dedicated Discord Bot. Invite CakeBot to your server using [this](https://kats.uno/cakebot/invite) link.\
+CakeBot is a Minecraft dedicated Discord Bot. Invite CakeBot to your server using [this](https://kats.uno/cakebot/invite) link.
 
 You are free to do whatever you want with this code, as long as you follow the MIT license.
 
