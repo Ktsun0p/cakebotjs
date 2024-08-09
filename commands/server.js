@@ -2,6 +2,7 @@ const { SlashCommandBuilder, EmbedBuilder, Interaction} = require('discord.js')
 const {getServerInfo} = require('../functions/getServerInfo.js')
 
 module.exports = {
+    cooldown:5,
     data: new SlashCommandBuilder()
         .setName('server')
         .setDescription('🎮 Gets a Minecraft java server info.')

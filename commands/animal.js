@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder} = require('discord.js');
 const fetch = require('node-fetch');
 module.exports = {
+    cooldown:2,
     data: new SlashCommandBuilder()
         .setName('animal')
         .setDescription('Random animal photos! 🐈')

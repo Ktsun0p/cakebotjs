@@ -6,6 +6,7 @@ const client = new Client({intents:[GatewayIntentBits.Guilds]});
 const TOKEN = process.env.TOKEN;
 
 client.commands = new Collection();
+client.cooldowns = new Collection();
 
 const commandsPath = path.join(__dirname,'commands');
 const commandsFiles = fs.readdirSync(commandsPath).filter(file=>file.endsWith('.js'));

@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, AttachmentBuilder} = require('discord.js')
 module.exports = {
+    cooldown:3,
     data: new SlashCommandBuilder()
         .setName('mob')
         .setDescription('🖼️ Random Minecraft mob (creature) image!'),
