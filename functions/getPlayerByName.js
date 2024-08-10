@@ -7,30 +7,39 @@ async function byName(player_name) {
 
     player = player_name.toLocaleLowerCase();
 
-    let apiUrl = await fetch(`https://api.mojang.com/users/profiles/minecraft/${player}`);
-    apiUrl = await apiUrl.json();
-
+    let apiUrl = await (await fetch(`https://api.mojang.com/users/profiles/minecraft/${player}`)).json();
+    
     if(apiUrl.errorMessage) throw new Error(apiUrl.errorMessage)
-    
-    let bodyurl = `https://visage.surgeplay.com/front/300/${apiUrl.id}.png`
-    let fullbodyurl = `https://visage.surgeplay.com/full/832/${apiUrl.id}.png`
-    let faceurl = `https://visage.surgeplay.com/face/512/${apiUrl.id}`
-    let headurl = `https://visage.surgeplay.com/head/512/${apiUrl.id}`
-    let skinurl = `https://minotar.net/download/${apiUrl.id}`
-    let namemcurl = `https://es.namemc.com/profile/${apiUrl.id}`
-    let headgivecommand = `/give @s minecraft:player_head{SkullOwner:"${apiUrl.name}"}`
-    
-    let playerInfo ={
+    const UUID = apiUrl.id;
+
+    const textures_encoded = (await (await fetch(`https://sessionserver.mojang.com/session/minecraft/profile/${UUID}`)).json()).properties[0].value;
+    const textures_decoded = JSON.parse(Buffer.from(textures_encoded,'base64').toString('utf-8'));
+
+    const skin_url = textures_decoded.textures.SKIN.url;
+    let body_url = `https://vzge.me/front/300/${UUID}.png`
+    let fullbody_url = `https://vzge.me/full/832/${UUID}.png`
+    let face_url = `https://vzge.me/face/512/${UUID}`
+    let head_url = `https://vzge.me/head/512/${UUID}`
+    let namemc_url = `https://es.namemc.com/profile/${UUID}`
+    let head_give_command = `/give @s minecraft:player_head{SkullOwner:"${apiUrl.name}"}`
+    const cape_url = textures_decoded.textures.CAPE ? textures_decoded.textures.CAPE.url : false;
+    const cape_render = cape_url ? `https://vzge.me/full/832/${apiUrl.name}.png?y=140` : false;
+    const back_render = cape_url ? `https://vzge.me/full/832/${apiUrl.name}.png?y=160` : false;
+    return playerInfo ={
         username: apiUrl.name,
-        UUID: apiUrl.id,
-        headGiveCommand: headgivecommand,
-        headURL: headurl,
-        faceURL: faceurl,
-        frontBodyURL: bodyurl,
-        fullBodyURL: fullbodyurl,
-        skinURL: skinurl,
-        namemcURL: namemcurl
+        UUID: UUID,
+        headGiveCommand: head_give_command,
+        headURL: head_url,
+        faceURL: face_url,
+        frontBodyURL: body_url,
+        fullBodyURL: fullbody_url,
+        skinURL: skin_url,
+        namemcURL: namemc_url,
+        cape:{
+            url:cape_url,
+            render:cape_render,
+            back_render: back_render
         }
-    return playerInfo
+        }
 };
 module.exports = {byName}

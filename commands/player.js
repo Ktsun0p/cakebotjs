@@ -63,6 +63,24 @@ module.exports = {
                     "es-419":'El nombre del jugador.',
                     "es-ES":'El nombre del jugador.'
                 }).setRequired(true))
+        )
+        .addSubcommand(subcommand=>
+            subcommand
+                .setName('cape')
+                .setDescription('🎮 Get a Minecraft java player cape.')
+                .setDescriptionLocalizations({
+                    "es-419":'🎮 Obtén la capa de un jugador de Minecraft Java.',
+                    "es-ES":'🎮 Obtén la capa de un jugador de Minecraft Java.'
+                })
+                .addStringOption(option =>option.setName('name')
+                .setNameLocalizations({
+                    "es-419":'nombre',
+                    "es-ES":'nombre'
+                }).setDescription('The player name.')
+                .setDescriptionLocalizations({
+                    "es-419":'El nombre del jugador.',
+                    "es-ES":'El nombre del jugador.'
+                }).setRequired(true))
         ),
     /**
      * 
@@ -93,9 +111,14 @@ module.exports = {
             .setLabel('Skin')
             .setStyle(ButtonStyle.Primary)
             .setEmoji('1034949555000705124');
+        const cape_btn = new ButtonBuilder()
+            .setCustomId('cape')
+            .setLabel('Cape')
+            .setStyle(ButtonStyle.Primary)
+            .setEmoji('1271950276173107241');
         const row = new ActionRowBuilder()
             .addComponents(skin_btn,head_btn);
-
+        if(player_info.cape.url) row.addComponents(cape_btn);
         const player_skin_embed = new EmbedBuilder()
             .setColor("LuminousVividPink")
             .setAuthor({name:`${player_info.username}'s Skin.`,iconURL:player_info.faceURL,url:player_info.faceURL})
@@ -117,19 +140,28 @@ module.exports = {
             )
             .setColor("LuminousVividPink")
             .setThumbnail(player_info.frontBodyURL);
-
-  
+      
+        if(player_info.cape.url){
+           player_cape_embed =  new EmbedBuilder()
+                .setColor("LuminousVividPink")
+                .setAuthor({name:`${player_info.username}'s Cape.`,iconURL:player_info.faceURL,url:player_info.cape.url})
+                .setThumbnail(player_info.cape.back_render)
+                .setImage(player_info.cape.render)
+                .setDescription(`[Download](${player_info.cape.url})`);
+        }
         switch (subcommand) {
             case 'info':
                 const collectorFilter = i => i.user.id === interaction.user.id;
                 const response = await interaction.editReply({embeds:[player_info_embed],components:[row]});
                 try {
-                    const selection = await response.awaitMessageComponent({ filter: collectorFilter, time: 60_000 });
+                    const selection = await response.awaitMessageComponent({ filter: collectorFilter, time: 30_000 });
                   
                     if(selection.customId==='head'){
                         await selection.update({embeds:[player_head_embed],components:[]})
                     }else if(selection.customId === 'skin'){
                         await selection.update({embeds:[player_skin_embed],components:[]})
+                    }else if(selection.customId === 'cape'){
+                        await selection.update({embeds:[player_cape_embed],components:[]})
                     }
                 } catch (error) {
                     row.components.forEach(b=>b.setDisabled(true));
@@ -140,6 +172,9 @@ module.exports = {
                 return await interaction.editReply({embeds:[player_head_embed]});
             case 'skin':
                 return await interaction.editReply({embeds:[player_skin_embed]});
+            case 'cape':
+                if(!player_info.cape.url) return await interaction.editReply({content:`\`${player_info.username}\` does not have a cape.`})
+                return await interaction.editReply({embeds:[player_cape_embed]})
             default:
                 break;
         }
