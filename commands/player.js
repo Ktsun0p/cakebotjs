@@ -130,7 +130,7 @@ module.exports = {
             .setAuthor({name:`${player_info.username}'s Head.`,iconURL:player_info.faceURL,url:player_info.faceURL})
             .setThumbnail(player_info.faceURL)
             .setImage(player_info.headURL)
-            .setDescription(`\`${player_info.headGiveCommand}\``);
+            .setDescription(`**Old:**\`${player_info.headGiveCommand}\`\n**1.20+** \`${player_info.new_headGiveCommand}\``);
         const player_info_embed = new EmbedBuilder()
             .setAuthor({name:`${player_info.username}`,iconURL:player_info.faceURL})
             .addFields(
